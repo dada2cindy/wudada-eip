@@ -18,7 +18,7 @@ using com.wudada.console.service.common.vo;
 public partial class admin_login : BasePage
 {
     IAuthService authService;
-    SessionHelper sHelper = new SessionHelper();
+    SessionHelper sessionHelper = new SessionHelper();
     CookieHelper cookieHelper = new CookieHelper();
 
     string HOME_INDEX = "~/admin/masterpage/index.aspx";
@@ -79,8 +79,8 @@ public partial class admin_login : BasePage
                 //重設權限
                 UserMenuFuncContainer.GetInstance().ResetAll();
                 object o = user.BelongRoles;
-                log.Debug("o==" + o);
-                sHelper.AdminUser = user;
+                log.Debug("目前使用者權限==" + o);
+                sessionHelper.AdminUser = user;
                 //記憶登入資訊
                 if (ckbSaveLogin.Checked)
                 {
@@ -100,7 +100,7 @@ public partial class admin_login : BasePage
         }
         else
         {
-            msg = MsgVO.WRONG_lOGIN_USER_ID_OR_PASS;
+            msg = MsgVO.WRONG_LOGIN_USER_ID_OR_PASS;
         }
 
         string JsStr = JavascriptUtil.AlertJS(msg);

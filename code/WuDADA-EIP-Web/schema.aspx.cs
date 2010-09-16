@@ -18,6 +18,7 @@ using com.wudada.console.service.auth.vo;
 using NHibernate.Impl;
 using Spring.Core.IO;
 using System.Xml;
+using com.wudada.console.service.system.vo;
 
 public partial class schema : BasePage
 {
@@ -124,9 +125,29 @@ public partial class schema : BasePage
 
     protected void btnInitData_Click(object sender, EventArgs e)
     {
+        //建立系統參數
+        intiSystemParam();
+        //建立權限/登入者
         initAuthData();
-
+        //建立功能
         initMenu();
+    }
+
+    private void intiSystemParam()
+    {
+        //系統設定
+        SystemParamVO spVO1 = new SystemParamVO();
+        spVO1.MailSmtp = "smtp.gmail.com";
+        spVO1.Account = "test@pro2e.com.tw";
+        spVO1.SendEmail = "test@pro2e.com.tw";
+        spVO1.MailPort = "587";
+        spVO1.IsEnableSSL = true;
+        spVO1.Password = "28005786";
+        spVO1.ComName = "WuDADA";
+        spVO1.ComEngName = "WuDADA";
+        spVO1.ComCEO = "WuDADA";
+
+        myService.DaoInsert(spVO1);
     }
 
     private void initMenu()

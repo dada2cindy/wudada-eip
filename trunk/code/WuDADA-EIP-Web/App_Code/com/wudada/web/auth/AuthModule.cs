@@ -20,8 +20,8 @@ namespace com.wudada.web.auth
         ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly string MANAGE_LOGIN_PATH = "~/admin/login/Login.aspx";
         private readonly string MANAGE_NOAUTH_PATH = "~/admin/login/NoAuth.aspx";
-        private readonly string[] ALLOW_PAGE = new string[] { "login.aspx", "NoAuth.aspx", "admin/Default.aspx",
-        "admin/masterpage/index.aspx", "FunctionPathSet.aspx","FCKeditor" };
+        private readonly string[] ALLOW_PAGE = new string[] { "admin/login/login.aspx", "admin/login/NoAuth.aspx", "admin/Default.aspx",
+        "admin/masterpage/index.aspx", "admin/auth/FunctionPathSet.aspx","FCKeditor",  "admin/login/forgetPass.aspx"};
 
         //  MySessionHelper mySHelper = new MySessionHelper();
 

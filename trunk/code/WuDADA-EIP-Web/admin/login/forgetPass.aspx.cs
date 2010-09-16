@@ -9,30 +9,36 @@ using com.wudada.console.service.auth.vo;
 using com.wudada.web.util.page;
 using com.wudada.web.auth;
 using com.wudada.web.mail;
+using com.wudada.console.service.common.vo;
+using com.wudada.console.service.auth;
 
 public partial class admin_login_forgetPass : BasePage
 {
-    WuDADAMailService wudadaMailService = new WuDADAMailService();
+    IAuthService authService;
+    WuDADAMailService wudadaMailService;
 
     protected new void Page_Load(object sender, EventArgs e)
     {
         base.Page_Load(sender, e);
+        authService = (IAuthService)ctx.GetObject("AuthService");
+        wudadaMailService = new WuDADAMailService();
 
     }
 
     protected void imgbtnForgetPass_Click(object sender, ImageClickEventArgs e)
     {
-        string msg = "帳號或E-mail錯誤";
+        string msg = MsgVO.WRONG_LOGIN_USER_ID_OR_EMAIL;
 
         if (!string.IsNullOrEmpty(txtId.Text.Trim()) && !string.IsNullOrEmpty(txtEmail.Text.Trim()))
         {
-            LoginUser user = myService.DaoGetVOById<LoginUser>(txtId.Text.Trim());
+            //LoginUser user = myService.DaoGetVOById<LoginUser>(txtId.Text.Trim());
+            LoginUser user = authService.Get_LoginUser_ByUserId(txtId.Text.Trim());
             if (user != null)
             {
                 if (user.Email.Equals(txtEmail.Text.Trim()))
                 {
                     wudadaMailService.SendMail_ToLoginUser_ResetPass(user.UserId);
-                    msg = "已寄發新密碼給您，請於收信後登入系統更改密碼";
+                    msg = MsgVO.RESET_LOGIN_USER_PASS;
                 }
             }
         }

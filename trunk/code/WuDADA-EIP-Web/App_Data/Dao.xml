@@ -4,9 +4,12 @@
   <object type="Spring.Objects.Factory.Config.PropertyPlaceholderConfigurer, Spring.Core">
     <property name="ConfigSections" value="databaseSettings"/>
   </object>
+  <!--<db:provider id="DbProvider"
+               provider="SqlServer-2.0"
+               connectionString="Data Source=localhost;Initial Catalog=wudada_eip;Persist Security Info=True;User ID=sa;Password=168;"/>-->
   <db:provider id="DbProvider"
                provider="SqlServer-2.0"
-               connectionString="Data Source=localhost;Initial Catalog=wudada_eip;Persist Security Info=True;User ID=sa;Password=168;"/>
+               connectionString="Data Source=wudada.db.6725057.hostedresource.com;Initial Catalog=wudada;Persist Security Info=True;User ID=wudada;Password=dada2CINDY;"/>
 
   <object id="NHibernateSessionFactory" type="Spring.Data.NHibernate.LocalSessionFactoryObject, Spring.Data.NHibernate20">
     <property name="DbProvider" ref="DbProvider"/>

@@ -61,14 +61,14 @@
                             <div id="links_content">
                                 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
                                     <ContentTemplate>
-                                        <asp:TreeView ID="tvMenu" runat="server" EnableViewState="true" CollapseImageUrl="~/admin/images/plus.jpg"
+                                        <asp:TreeView ID="tvMenu" runat="server" EnableViewState="true" CollapseImageUrl="~/admin/images/minus.jpg"
                                             ExpandDepth="1" ExpandImageUrl="~/admin/images/plus.jpg" PopulateNodesFromClient="False"
                                             Style="text-align: left;" EnableClientScript="False" OnSelectedNodeChanged="tvMenu_SelectedNodeChanged">
                                             <RootNodeStyle CssClass="menuParent" />
                                             <LeafNodeStyle CssClass="menuNode" ImageUrl="~/admin/images/arrow.jpg" />
                                             <SelectedNodeStyle CssClass="menuSelected" />
                                         </asp:TreeView>
-                                    </ContentTemplate>                                    
+                                    </ContentTemplate>
                                 </asp:UpdatePanel>
                             </div>
                             <div id="links_bottom">

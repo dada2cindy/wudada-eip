@@ -9,37 +9,43 @@
     <ajax:Loading ID="Loading" runat="server" />
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
+        <br />
             <table border="0" cellpadding="0" cellspacing="0" width="96%">
                 <tr>
                     <td>
-                        <table width="100%" border="0" cellpadding="0" cellspacing="0" class="searchConTable">
+                        <table width="100%" border="0" cellpadding="5" cellspacing="0" >
                             <tr>
-                                <td colspan="4" class="searchConHeader">
-                                    查詢相關連結
+                                <td colspan="4" bgcolor="#F0F0F0" class="searchConHeader" >
+                                    查詢相關連結 
+                                    <div class="add">
+                                        <asp:ImageButton ID="imgbtnAdd" runat="server" height="23" 
+                                            ImageUrl="../images/add_btn.jpg" OnClick="btnAdd_Click" width="62" />
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="searchConContent" align="right" width="70px" height="30px">
-                                    群組名稱
+                                <td  >
+                                    群組名稱 <asp:TextBox ID="txtSearchTitle" runat="server" Width="190px"></asp:TextBox>                                                     
                                 </td>
-                                <td class="searchConContent" width="200px">
-                                    <asp:TextBox ID="txtSearchTitle" Width="190px" runat="server"></asp:TextBox>
-                                </td>
-                                <td class="searchConContent">
-                                    <asp:Button ID="btnSearch" runat="server" Text="查詢" Width="60px" OnClick="btnSearch_Click"
-                                        Height="20px" />&nbsp;
-                                </td>
-                                <td>
-                                <asp:Button ID="btnAdd" runat="server" OnClick="btnAdd_Click"
-                                            Text="新增群組" Height="20px" />
+                            </tr>
+                            <tr>
+                                <td  height="30px">
+                                 
+                                    <asp:ImageButton ID="imgbtnSearch" runat="server" 
+                                        ImageUrl="../images/search_btn02.jpg" OnClick="btnSearch_Click" 
+                                        ToolTip="查詢" />
                                 </td>
                             </tr>
                         </table>
-                        <table width="100%" border="0" cellpadding="0" cellspacing="0" class="searchResultTable">
+                     
+                    </td>
+                </tr>
+            </table>
+            <br />
+               <table width="100%" border="0" cellpadding="0" cellspacing="0" >
                             <tr>
-                                <td class="searchResultHeader">
-                                    查詢結果<asp:Label ID="lblMsg" runat="server" CssClass="labelMsg" EnableViewState="False"></asp:Label>
-                                </td>
+                                <td bgcolor="#F0F0F0" >
+                                    查詢結果<asp:Label ID="lblMsg" runat="server" CssClass="labelMsg" EnableViewState="False"></asp:Label></td>
                             </tr>
                             <tr>
                                 <td align="center">
@@ -53,19 +59,16 @@
                                             </asp:BoundField>
                                             <asp:TemplateField HeaderText="" ShowHeader="False">
                                                 <ItemTemplate>
-                                                    <asp:Button ID="Button1" runat="server" Text="修改" CausesValidation="false" CommandName="MyEdit"
-                                                        CommandArgument='<%# Eval("RoleId") %>' Height="20px" />
-                                                                                                
-                                                
+                                                    <asp:ImageButton ID="imgbtnEdit" runat="server" ImageUrl="../images/brower_btn.jpg" ToolTip="修改" CausesValidation="false"  CommandName="MyEdit"
+                                                        CommandArgument='<%# Eval("RoleId") %>' />
                                                     </ItemTemplate>
                                                 <HeaderStyle Width="50px" />
                                                 <ItemStyle HorizontalAlign="Center" />
                                             </asp:TemplateField>
                                             <asp:TemplateField HeaderText="">
                                                 <ItemTemplate>
-                                                    <asp:Button ID="Button2" runat="server" Text="刪除" OnClientClick="return confirm('確定刪除?')"
-                                                        CommandArgument='<%# Eval("RoleId") %>' CommandName="MyDel" Height="20px" />
-                                            
+                                             <asp:ImageButton ID="imgbtnDel" runat="server" ImageUrl="../images/delete_btn.jpg" ToolTip="刪除" CausesValidation="false"  CommandName="MyDel" OnClientClick="return confirm('確定刪除?')"
+                                                        CommandArgument='<%# Eval("RoleId") %>' />
                                                 </itemtemplate>
                                                 <HeaderStyle Width="50px" />
                                                 <ItemStyle HorizontalAlign="Center" />
@@ -83,9 +86,6 @@
                                 </td>
                             </tr>
                         </table>
-                    </td>
-                </tr>
-            </table>
         </ContentTemplate>
     </asp:UpdatePanel>
 </asp:Content>

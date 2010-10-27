@@ -10,21 +10,22 @@ using Spring.Context;
 using com.wudada.console.service.auth;
 using com.wudada.console.service.auth.vo;
 using NHibernate;
-using com.wudada.web.page;
 using com.wudada.console.service.common.vo;
 
-public partial class admin_auth_User : BasePage
+public partial class admin_auth_User : System.Web.UI.Page
 {
+    ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
     IAuthService authService;
 
-    protected new void Page_Load(object sender, EventArgs e)
+    protected void Page_Load(object sender, EventArgs e)
     {
-        base.Page_Load(sender, e);
+        IApplicationContext ctx = ContextRegistry.GetContext();
         authService = (IAuthService)ctx.GetObject("AuthService");
 
         if (!IsPostBack)
         {
-            initGV();         
+            initGV();
+          
         }
 
         //新增模式
@@ -33,7 +34,7 @@ public partial class admin_auth_User : BasePage
 
     private void initGV()
     {
-        GridView1.DataSource = myService.DaoGetAllVO<LoginUser>();
+        GridView1.DataSource = authService.myService.DaoGetAllVO<LoginUser>();
         GridView1.DataBind();
     }
 
@@ -59,25 +60,26 @@ public partial class admin_auth_User : BasePage
     protected void btnAdd_Click(object sender, ImageClickEventArgs e)
     {
         lblMsg.Text = "";
-        string userId = txtId.Text;
+        string id = txtId.Text;
         string pw = txtPw.Text;
         string pw2 = txtPw2.Text;
         string userName = txtName.Text;
 
-        LoginUser user = authService.Get_LoginUser_ByUserId(userId);
+        LoginUser user = authService.Get_LoginUser_ByUserId(id);
 
         if (user != null)
         {
+            //lblMsg.Text = MsgVO.USER_ALREADY_EXIST;
             lblMsg.Text = MsgVO.EXIST_USER_ACCOUNT;
             return;
         }
         else
         {
             LoginUser newUser = new LoginUser();
-            newUser.UserId = userId;
-            newUser.Password = userId;
+            newUser.UserId = id;
+            newUser.Password = id;
             newUser.Name = userName;
-            myService.DaoInsert(newUser);
+            authService.myService.DaoInsert(newUser);
             lblMsg.Text = MsgVO.INSERT_OK;
             clearInput();
             initGV();
@@ -99,19 +101,19 @@ public partial class admin_auth_User : BasePage
     }
     protected void btnUpdate_Click(object sender, ImageClickEventArgs e)
     {
-        string userId = txtId.Text;
+        string id = txtId.Text;
         string pw = txtPw.Text;
         string pw2 = txtPw2.Text;
         string userName = txtName.Text;
 
-        LoginUser user = authService.Get_LoginUser_ByUserId(userId);
+        LoginUser user = authService.Get_LoginUser_ByUserId(id);
 
         user.Password = pw;
         user.Name = userName;
 
         try
         {
-            myService.DaoUpdate(user);
+            authService.myService.DaoUpdate(user);
 
             lblMsg.Text = MsgVO.UPDATE_OK;
 
@@ -150,7 +152,7 @@ public partial class admin_auth_User : BasePage
 
             case "MyDelete":
                 string uid = e.CommandArgument.ToString();
-                myService.DaoDelete(myService.DaoGetVOById<LoginUser>(uid));
+                authService.myService.DaoDelete(authService.myService.DaoGetVOById<LoginUser>(uid));
                 initGV();
                 break;
         }

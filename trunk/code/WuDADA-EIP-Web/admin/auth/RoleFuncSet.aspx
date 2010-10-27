@@ -9,16 +9,16 @@
      <ajax:Loading ID="Loading" runat="server" />
         <asp:UpdatePanel ID="UpdatePanel1" runat="server">
             <ContentTemplate>
-                <table style="border: 1px solid #58a960; width: 100%">
+            <br />
+                <table  width="100%" border="0" cellpadding="5" cellspacing="0">
                     <tr>
-                        <td height="30px" class="labelHeader">
-                            <div align="center" id="title">
+                        <td height="30px" class="labelHeader"  bgcolor="#F0F0F0">
+                            <div align="center" id="title"  >
                                 群組權限設定</div>
-                            <hr border="1" />
                         </td>
                     </tr>
                     <tr>
-                        <td height="30px" class="labelHeader">
+                        <td  class="updateDateContent" align="right" height="30px">
                             <div align="center">
                                 群組名稱：
                                 <asp:DropDownList ID="ddlRole" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlRole_SelectedIndexChanged">
@@ -34,8 +34,8 @@
                         <td height="30px" align="center">
                             <br />
                             設定權限
-                            <hr border="1" />
-                            <br />
+                            <hr border="1" align="center" />
+                          
                             <asp:GridView ID="gvAuth" runat="server" AutoGenerateColumns="False" Width="500px">
                                 <RowStyle CssClass="gvRow" />
                                 <Columns>
@@ -62,17 +62,15 @@
                             </asp:GridView>
                         </td>
                     </tr>
-                    <tr class="labelHeader">
-                        <td width="34%" align="center">
-                            <asp:ImageButton ID="btnUpdate" runat="server" ImageUrl="~/admin/auth/images/btn_save.jpg"
-                                OnClick="btnUpdate_Click" />
+                    <tr  class="updateDateContent">
+                        <td  align="center">
+                            <%--<asp:ImageButton ID="btnUpdate" runat="server" ImageUrl="~/admin/auth/images/btn_save.jpg"
+                                OnClick="btnUpdate_Click" />--%>
+                            <asp:Button ID="btnUpdate" runat="server" Text="儲存" CssClass="btn" OnClick="btnUpdate_Click" />
+                                  <asp:Label ID="lblMsg" runat="server" ForeColor="Red"></asp:Label>
                         </td>
                     </tr>
-                    <tr class="labelHeader">
-                        <td width="34%" align="center" class="style1">
-                            <asp:Label ID="lblMsg" runat="server" ForeColor="Red"></asp:Label>
-                        </td>
-                    </tr>
+                   
                 </table>
             </ContentTemplate>
         </asp:UpdatePanel>

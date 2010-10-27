@@ -6,19 +6,23 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using com.wudada.console.service.auth;
 using Common.Logging;
+using Spring.Context;
+using Spring.Context.Support;
 using com.wudada.console.service.auth.vo;
+using bgo.web.ui;
 using com.wudada.web.util.page;
 using com.wudada.console.generic.util;
-using com.wudada.web.page;
 
 
-public partial class admin_auth_RoleFuncSet : BasePage
+public partial class admin_auth_RoleFuncSet : System.Web.UI.Page
 {
+    ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
 	IAuthService authService;
 
-    protected new void Page_Load(object sender, EventArgs e)
+    protected void Page_Load(object sender, EventArgs e)
     {
-        base.Page_Load(sender, e);
+        IApplicationContext ctx = ContextRegistry.GetContext();
         authService = (IAuthService)ctx.GetObject("AuthService");
 
         if (!Page.IsPostBack)
@@ -49,7 +53,7 @@ public partial class admin_auth_RoleFuncSet : BasePage
 
     private void initDDLRole()
     {
-        IList<LoginRole> roleList = myService.DaoGetAllVO<LoginRole>();
+        IList<LoginRole> roleList = authService.myService.DaoGetAllVO<LoginRole>(); ;
 
         foreach (LoginRole role in roleList)
         {
@@ -75,7 +79,7 @@ public partial class admin_auth_RoleFuncSet : BasePage
 
         if (!string.IsNullOrEmpty(selectedRole))
         {
-            LoginRole role = myService.DaoGetVOById<LoginRole>(int.Parse(selectedRole));
+            LoginRole role = authService.myService.DaoGetVOById<LoginRole>(int.Parse(selectedRole));
 
             IList<MenuFunc> selectedMenuFuncList;
 
@@ -192,17 +196,17 @@ public partial class admin_auth_RoleFuncSet : BasePage
         }
     }
 
-    protected void btnUpdate_Click(object sender, ImageClickEventArgs e)
+    protected void btnUpdate_Click(object sender, EventArgs e)
     {
         string selectedRole = ddlRole.SelectedValue;
-        LoginRole role = myService.DaoGetVOById<LoginRole>(int.Parse(selectedRole));
+        LoginRole role = authService.myService.DaoGetVOById<LoginRole>(int.Parse(selectedRole));
 
         foreach (GridViewRow row in gvAuth.Rows)
         {
             Control ctrl = row;
             bool isCheck = UIHelper.FindCheckBox(ctrl, "ckIsAuth");
             string hdnId = UIHelper.FindHiddenValue(ctrl, "hdnId");
-            MenuFunc theFunc = myService.DaoGetVOById<MenuFunc>(int.Parse(hdnId));
+            MenuFunc theFunc = authService.myService.DaoGetVOById<MenuFunc>(int.Parse(hdnId));
 
             if (isCheck)
             {
@@ -215,7 +219,7 @@ public partial class admin_auth_RoleFuncSet : BasePage
                 {
                     role.MenuFuncs.Add(theFunc);
                 }
-                myService.DaoUpdate(role);
+                authService.myService.DaoUpdate(role);
             }
             else
             {
@@ -223,7 +227,7 @@ public partial class admin_auth_RoleFuncSet : BasePage
                 {
                     role.MenuFuncs.Remove(theFunc);
                 }
-                myService.DaoUpdate(role);
+                authService.myService.DaoUpdate(role);
             }
 
         
@@ -232,6 +236,64 @@ public partial class admin_auth_RoleFuncSet : BasePage
         UserMenuFuncContainer.GetInstance().ResetAll();
 
         lblMsg.Text = "更新成功";
+    }
+
+   
+}
+
+
+namespace bgo.web.ui
+{
+    public class UC14Service
+    {
+        AuthService authService = new AuthService();
+        ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+
+        public IList<RoleMenuShowVO> GetGridViewRow(string selectedRole, string selectedMenuFunc)
+        {
+
+            IList<RoleMenuShowVO> showVOList = new List<RoleMenuShowVO>();
+
+            log.Debug("selectedRole=" + selectedRole);
+            log.Debug("selectedMenuFunc=" + selectedMenuFunc);
+
+            LoginRole role = authService.myService.DaoGetVOById<LoginRole>(int.Parse(selectedRole));
+
+            IList<MenuFunc> selectedMenuFuncList;
+
+
+            if (selectedMenuFunc.Equals("0"))
+            {
+                selectedMenuFuncList = authService.GetNotTopMenuFunc();
+            }
+            else
+            {
+                selectedMenuFuncList = authService.GetMenuFuncByParentId(int.Parse(selectedMenuFunc));
+            }
+
+            foreach (MenuFunc menu in selectedMenuFuncList)
+            {
+                RoleMenuShowVO showVO = new RoleMenuShowVO();
+
+                showVO.Id = menu.Id;
+                showVO.Name = menu.MenuFuncName;
+                showVO.No = menu.Note;
+                if (role.MenuFuncs.Contains(menu))
+                {
+                    showVO.IsAuth = true;
+                }
+                else
+                {
+                    showVO.IsAuth = false;
+                }
+
+                showVOList.Add(showVO);
+            }
+
+            return showVOList;
+        }
+
     }
 
     public class RoleMenuShowVO

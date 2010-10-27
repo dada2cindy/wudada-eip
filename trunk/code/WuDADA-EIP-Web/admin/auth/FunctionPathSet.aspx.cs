@@ -5,19 +5,22 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using com.wudada.console.service.auth;
+using Spring.Context;
+using Spring.Context.Support;
 using com.wudada.console.service.auth.vo;
 using com.wudada.web.util.page;
 using Common.Logging;
-using com.wudada.web.page;
 using com.wudada.console.service.common.vo;
 
-public partial class admin_auth_FunctionPathSet : BasePage
+public partial class admin_auth_FunctionPathSet : System.Web.UI.Page
 {
+    ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
     IAuthService authService;
  
-    protected new void Page_Load(object sender, EventArgs e)
+    protected void Page_Load(object sender, EventArgs e)
     {
-        base.Page_Load(sender, e);
+        IApplicationContext ctx = ContextRegistry.GetContext();
         authService = (IAuthService)ctx.GetObject("AuthService");
 
         if (!Page.IsPostBack)
@@ -46,7 +49,7 @@ public partial class admin_auth_FunctionPathSet : BasePage
 
         if (!string.IsNullOrEmpty(selectedId))
         {
-            MenuFunc menufunc = myService.DaoGetVOById<MenuFunc>(int.Parse(selectedId));
+            MenuFunc menufunc = authService.myService.DaoGetVOById<MenuFunc>(int.Parse(selectedId));
 
             txtMainPath.Text = menufunc.MainPath;
 
@@ -65,20 +68,20 @@ public partial class admin_auth_FunctionPathSet : BasePage
         string cmdArg = e.CommandArgument.ToString();
 
         Control ctrl = ((Control)e.CommandSource);
-        FunctionPath fp = myService.DaoGetVOById<FunctionPath>(int.Parse(cmdArg));
+        FunctionPath fp = authService.myService.DaoGetVOById<FunctionPath>(int.Parse(cmdArg));
 
         switch (cmdName)
         {
             case "MyUpdate":
                 fp.Path = UIHelper.FindTextBoxText(ctrl, "txtFPath");
-                myService.DaoUpdate(fp);
+                authService.myService.DaoUpdate(fp);
                 lblMsg.Text = MsgVO.UPDATE_OK;
                 fillData();
                 break;
 
             case "MyDel":
                 fp.BelongMenuFunc.FuncionPaths.Remove(fp);
-                myService.DaoDelete(fp);
+                authService.myService.DaoDelete(fp);
                 lblMsg.Text = MsgVO.DELETE_OK;
                 fillData();
                 break;
@@ -87,17 +90,17 @@ public partial class admin_auth_FunctionPathSet : BasePage
     }
     protected void btnUpdate_Click(object sender, ImageClickEventArgs e)
     {
-        MenuFunc menufunc = myService.DaoGetVOById<MenuFunc>(int.Parse(ddlSubMenu.SelectedValue));
+        MenuFunc menufunc = authService.myService.DaoGetVOById<MenuFunc>(int.Parse(ddlSubMenu.SelectedValue));
 
         menufunc.MainPath = txtMainPath.Text.Trim();
 
-        myService.DaoUpdate(menufunc);
+        authService.myService.DaoUpdate(menufunc);
 
         lblMsg.Text = MsgVO.UPDATE_OK;
     }
     protected void btnAdd_Click(object sender, ImageClickEventArgs e)
     {
-        MenuFunc subMenu = myService.DaoGetVOById<MenuFunc>(int.Parse(ddlSubMenu.SelectedValue));
+        MenuFunc subMenu = authService.myService.DaoGetVOById<MenuFunc>(int.Parse(ddlSubMenu.SelectedValue));
 
         if (subMenu.FuncionPaths == null)
         {
@@ -107,9 +110,9 @@ public partial class admin_auth_FunctionPathSet : BasePage
         FunctionPath fph = new FunctionPath();
         fph.BelongMenuFunc = subMenu;
         fph.Path = txtPath.Text;
-        myService.DaoInsert(fph);
+        authService.myService.DaoInsert(fph);
         subMenu.FuncionPaths.Add(fph);
-        myService.DaoUpdate(subMenu);
+        authService.myService.DaoUpdate(subMenu);
 
         lblMsg.Text = MsgVO.INSERT_OK;
         txtPath.Text = "";
@@ -117,7 +120,7 @@ public partial class admin_auth_FunctionPathSet : BasePage
     }
     protected void dllTopMenu_SelectedIndexChanged(object sender, EventArgs e)
     {
-        MenuFunc topMenu = myService.DaoGetVOById<MenuFunc>(int.Parse(ddlTopMenu.SelectedValue));
+        MenuFunc topMenu = authService.myService.DaoGetVOById<MenuFunc>(int.Parse(ddlTopMenu.SelectedValue));
         ddlSubMenu.Items.Clear();
         UIHelper.AddDropDowListItem(ddlSubMenu, topMenu.SubFuncs.GetEnumerator(), "MenuFuncName", "Id");
         fillData();

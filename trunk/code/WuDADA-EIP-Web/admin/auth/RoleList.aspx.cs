@@ -12,19 +12,20 @@ using Spring.Context.Support;
 using Common.Logging;
 using com.wudada.console.service.auth;
 using com.wudada.console.service.auth.vo;
-using com.wudada.web.page;
 
 
-public partial class admin_auth_RoleList : BasePage
+public partial class admin_auth_RoleList : System.Web.UI.Page
 {
+    ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
     IAuthService authService;    
     string DETAIL_PATE = "RoleDetail.aspx";
 
-    protected new void Page_Load(object sender, EventArgs e)
+    protected void Page_Load(object sender, EventArgs e)
     {
-        base.Page_Load(sender, e); 
+        IApplicationContext ctx = ContextRegistry.GetContext();
         authService = (IAuthService)ctx.GetObject("AuthService");
-        
+
+
         if (!Page.IsPostBack)
         {
             btnSearch_Click(null, null);
@@ -39,7 +40,7 @@ public partial class admin_auth_RoleList : BasePage
         //注入條件
         DetachedCriteria detachedCriteria = GenerateRule();
 
-        AspNetPager1.RecordCount = myService.CountDetachedCriteriaRow(detachedCriteria);
+        AspNetPager1.RecordCount = authService.myService.CountDetachedCriteriaRow(detachedCriteria);
 
         lblMsg.Text += " <span class='searchAlterTxt'>(共有</span> " + AspNetPager1.RecordCount + " <span class='searchAlterTxt'>筆資料)</span>";
 
@@ -55,7 +56,7 @@ public partial class admin_auth_RoleList : BasePage
 
     private void fillGridView(DetachedCriteria detachedCriteria, int startIndex, int MaxRecord)
     {
-        GridView1.DataSource = myService.ExecutableDetachedCriteria<LoginRole>(detachedCriteria, startIndex, MaxRecord);
+        GridView1.DataSource = authService.myService.ExecutableDetachedCriteria<LoginRole>(detachedCriteria, startIndex, MaxRecord);
         GridView1.DataBind();
     }
     protected void GridView1_RowCommand(object sender, GridViewCommandEventArgs e)
@@ -66,7 +67,7 @@ public partial class admin_auth_RoleList : BasePage
                 Response.Redirect(DETAIL_PATE + "?id=" + e.CommandArgument.ToString());
                 break;
             case "MyDel":
-                LoginRole loginRole = myService.DaoGetVOById<LoginRole>(int.Parse(e.CommandArgument.ToString()));
+                LoginRole loginRole = authService.myService.DaoGetVOById<LoginRole>(int.Parse(e.CommandArgument.ToString()));
 
                 int roleId = int.Parse(e.CommandArgument.ToString());
                          
@@ -83,7 +84,7 @@ public partial class admin_auth_RoleList : BasePage
                     return;
                 }
                 
-                myService.DaoDelete(loginRole);
+                authService.myService.DaoDelete(loginRole);
 
                 string jsStr = JavascriptUtil.AlertJS("刪除成功");
                 ScriptManager.RegisterClientScriptBlock(lblMsg, lblMsg.GetType(), "data", jsStr, false);

@@ -13,10 +13,9 @@ using Common.Logging;
 using com.wudada.console.service.auth;
 using com.wudada.console.service.auth.vo;
 using com.wudada.console.generic.util;
-using com.wudada.web.page;
 
 
-public partial class admin_auth_RoleDetail : BasePage
+public partial class admin_auth_RoleDetail : System.Web.UI.Page
 {
     ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
     
@@ -25,9 +24,9 @@ public partial class admin_auth_RoleDetail : BasePage
 
     string LIST_URL = "UserList.aspx";
 
-    protected new void Page_Load(object sender, EventArgs e)
+    protected void Page_Load(object sender, EventArgs e)
     {
-        base.Page_Load(sender, e);
+        IApplicationContext ctx = ContextRegistry.GetContext();
         authService = (AuthService)ctx.GetObject("AuthService");
 
         if (!Page.IsPostBack)
@@ -50,7 +49,7 @@ public partial class admin_auth_RoleDetail : BasePage
     {
         ckblRole.Items.Clear();
 
-        IList<LoginRole> roleList = myService.DaoGetAllVO<LoginRole>();
+        IList<LoginRole> roleList = authService.myService.DaoGetAllVO<LoginRole>();
         if (!CollectionUtil.IsNullOrEmpty<LoginRole>(roleList))
         {
             foreach (LoginRole vo in roleList)
@@ -63,11 +62,12 @@ public partial class admin_auth_RoleDetail : BasePage
     {
         LoginUser user = new LoginUser();
         user.Name = txtName.Text.Trim();
+        user.Email = txtEmail.Text.Trim();
         user.UserId = txtUserId.Text.Trim();
         user.Password = EncryptUtil.GetMD5(txtPassword.Text.Trim());
         user.IsEnable = Convert.ToBoolean(rdoIsEnable.SelectedValue);
         SetLoginRoles(user);
-        myService.DaoInsert(user);
+        authService.myService.DaoInsert(user);
 
         string JsStr = JavascriptUtil.AlertJSAndRedirect("新增成功", LIST_URL);
         ScriptManager.RegisterClientScriptBlock(lblMsg, lblMsg.GetType(), "data", JsStr, false);
@@ -82,7 +82,7 @@ public partial class admin_auth_RoleDetail : BasePage
             if (ckblRole.Items[i].Selected)
             {
                 int roleId = int.Parse(ckblRole.Items[i].Value);
-                LoginRole loginRole = myService.DaoGetVOById<LoginRole>(roleId);
+                LoginRole loginRole = authService.myService.DaoGetVOById<LoginRole>(roleId);
                 roleList.Add(loginRole);
             }
         }
@@ -91,10 +91,10 @@ public partial class admin_auth_RoleDetail : BasePage
     }
     protected void btnUpdate_Click(object sender, EventArgs e)
     {
-        LoginUser user = myService.DaoGetVOById<LoginUser>(hdnId.Value);
+        LoginUser user = authService.myService.DaoGetVOById<LoginUser>(int.Parse(hdnId.Value));
 
         user.Name = txtName.Text.Trim();
-
+        user.Email = txtEmail.Text.Trim();
         user.IsEnable = Convert.ToBoolean(rdoIsEnable.SelectedValue);
 
         if (pnlUpdatePass.Visible != false)
@@ -102,7 +102,7 @@ public partial class admin_auth_RoleDetail : BasePage
             user.Password = EncryptUtil.GetMD5(txtPassword.Text.Trim());
         }
         SetLoginRoles(user);
-        myService.DaoUpdate(user);
+        authService.myService.DaoUpdate(user);
 
         string JsStr = JavascriptUtil.AlertJSAndRedirect("更新成功", LIST_URL);
         ScriptManager.RegisterClientScriptBlock(lblMsg, lblMsg.GetType(), "data", JsStr, false);
@@ -127,7 +127,7 @@ public partial class admin_auth_RoleDetail : BasePage
     }
     private void LoadDataToUI(string id)
     {
-        LoginUser user = myService.DaoGetVOById<LoginUser>(id);
+        LoginUser user = authService.myService.DaoGetVOById<LoginUser>(int.Parse(id));
 
         UIHelper.FillUI(Panel1, user);
         rdoIsEnable.SelectedValue = user.IsEnable.ToString();

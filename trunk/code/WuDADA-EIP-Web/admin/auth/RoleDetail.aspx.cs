@@ -12,20 +12,22 @@ using Spring.Context.Support;
 using Common.Logging;
 using com.wudada.console.service.auth;
 using com.wudada.console.service.auth.vo;
-using com.wudada.web.page;
 
-public partial class admin_auth_RoleDetail : BasePage
-{    
+public partial class admin_auth_RoleDetail : System.Web.UI.Page
+{
+    ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+    
 	IAuthService authService;
     SessionHelper sessionHelper = new SessionHelper();
 
     string LIST_PAGE = "RoleList.aspx";
 
-    protected new void Page_Load(object sender, EventArgs e)
+    protected void Page_Load(object sender, EventArgs e)
     {
-        base.Page_Load(sender, e);
+        IApplicationContext ctx = ContextRegistry.GetContext();
         authService = (IAuthService)ctx.GetObject("AuthService");
         
+
         if (!Page.IsPostBack)
         {
             ClearData();
@@ -46,19 +48,19 @@ public partial class admin_auth_RoleDetail : BasePage
         LoginRole role = new LoginRole();
 
         role.RoleName = txtRoleName.Text.Trim();
-
-        myService.DaoInsert(role);
+        
+        authService.myService.DaoInsert(role);
 
         string JsStr = JavascriptUtil.AlertJSAndRedirect("新增成功", LIST_PAGE);
         ScriptManager.RegisterClientScriptBlock(lblMsg, lblMsg.GetType(), "data", JsStr, false);
     }
     protected void btnUpdate_Click(object sender, EventArgs e)
     {
-        LoginRole loginRole = myService.DaoGetVOById<LoginRole>(int.Parse(lblId.Text));
+        LoginRole loginRole = authService.myService.DaoGetVOById<LoginRole>(int.Parse(lblId.Text));
 
         loginRole.RoleName = txtRoleName.Text.Trim();
 
-        myService.DaoUpdate(loginRole);
+        authService.myService.DaoUpdate(loginRole);
 
         string JsStr = JavascriptUtil.AlertJSAndRedirect("更新成功",LIST_PAGE);
         ScriptManager.RegisterClientScriptBlock(lblMsg, lblMsg.GetType(), "data", JsStr, false);
@@ -80,7 +82,7 @@ public partial class admin_auth_RoleDetail : BasePage
     }
     private void LoadDataToUI(int id)
     {
-        LoginRole role = myService.DaoGetVOById<LoginRole>(id);
+        LoginRole role = authService.myService.DaoGetVOById<LoginRole>(id);
 
         lblId.Text = role.RoleId.ToString();
         txtRoleName.Text = role.RoleName;      

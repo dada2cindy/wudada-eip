@@ -13,18 +13,18 @@ using Spring.Context.Support;
 using Common.Logging;
 using com.wudada.console.service.auth;
 using com.wudada.console.service.auth.vo;
-using com.wudada.web.page;
 
-public partial class admin_auth_UserList : BasePage
+
+public partial class admin_auth_UserList : System.Web.UI.Page
 {
     ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
     IAuthService authService;
    
     string DETAIL_PATE = "UserDetail.aspx";
 
-    protected new void Page_Load(object sender, EventArgs e)
+    protected void Page_Load(object sender, EventArgs e)
     {
-        base.Page_Load(sender, e);        
+        IApplicationContext ctx = ContextRegistry.GetContext();
         authService = (IAuthService)ctx.GetObject("AuthService");
 
 
@@ -42,9 +42,9 @@ public partial class admin_auth_UserList : BasePage
         //注入條件
         DetachedCriteria detachedCriteria = GenerateRule();
 
-        AspNetPager1.RecordCount = myService.CountDetachedCriteriaRow(detachedCriteria);
+        AspNetPager1.RecordCount = authService.myService.CountDetachedCriteriaRow(detachedCriteria);
 
-        lblMsg.Text += " <span class='searchAlterTxt'>(共有</span> " + AspNetPager1.RecordCount + " <span class='searchAlterTxt'>筆資料)</span>";
+        lblMsg.Text = " <span class='searchAlterTxt'>(共有</span> " + AspNetPager1.RecordCount + " <span class='searchAlterTxt'>筆資料)</span>";
 
         fillPagedGridView(GenerateRule());
     }
@@ -58,7 +58,7 @@ public partial class admin_auth_UserList : BasePage
 
     private void fillGridView(DetachedCriteria detachedCriteria, int startIndex, int MaxRecord)
     {
-        GridView1.DataSource = myService.ExecutableDetachedCriteria<LoginUser>(detachedCriteria, startIndex, MaxRecord);
+        GridView1.DataSource = authService.myService.ExecutableDetachedCriteria<LoginUser>(detachedCriteria, startIndex, MaxRecord);
         GridView1.DataBind();
     }
     protected void GridView1_RowCommand(object sender, GridViewCommandEventArgs e)
@@ -78,8 +78,8 @@ public partial class admin_auth_UserList : BasePage
                 }
                 else
                 {
-                    LoginUser loginUser = myService.DaoGetVOById<LoginUser>(e.CommandArgument.ToString());
-                    myService.DaoDelete(loginUser);
+                    LoginUser loginUser = authService.myService.DaoGetVOById<LoginUser>(e.CommandArgument.ToString());
+                    authService.myService.DaoDelete(loginUser);
                     jsStr = JavascriptUtil.AlertJS("刪除成功");
                     btnSearch_Click(null, null);
                 }
@@ -108,7 +108,7 @@ public partial class admin_auth_UserList : BasePage
 
         if (!String.IsNullOrEmpty(searchClassify))
         {
-            query.Add(Expression.Like("UserName", "%" + searchClassify + "%"));
+            query.Add(Expression.Like("UserId", searchClassify, MatchMode.Anywhere));
         }
 
         query.AddOrder(Order.Asc("UserId"));

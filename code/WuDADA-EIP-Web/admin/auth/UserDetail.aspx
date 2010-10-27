@@ -5,43 +5,37 @@
 <%@ Register TagName="Loading" TagPrefix="ajax" Src="~/admin/common/AjaxLoading.ascx" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
-    <style type="text/css">
-        .style1
-        {
-            font-size: 13px;
-            color: #000000;
-            padding-left: 5px;
-            width: 165px;
-        }
-    </style>
+  
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <ajax:Loading ID="Loading1" runat="server" />
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
             <asp:Panel ID="Panel1" runat="server">
+            <br />
                 <table border="0" cellpadding="0" cellspacing="0" width="96%">
                     <tr>
                         <td>
                             <table width="100%" border="0" cellpadding="0" cellspacing="0" class="updateDataTable">
                                 <tr>
-                                    <td colspan="2" class="updateDateHeader">
-                                        (<font color='#FF0000'>*</font>為必填欄位)<asp:Label ID="lblMsg" runat="server" CssClass="labelMsg"
+                                   <th colspan="2" class="updateDateHeader"> <span id="ctl00_ContentPlaceHolder1_lblMsg" class="labelMsg"></span>
+                                   (<font color='#FF0000'>*</font>為必填欄位)<asp:Label ID="lblMsg" runat="server" CssClass="labelMsg"
                                             EnableViewState="False"></asp:Label>
-                                    </td>
+                                    </th>
+
                                 </tr>
                                 <tr>
-                                    <td class="style1" align="right" height="30px">
+                                    <td   class="updateDateContent" align="right" height="30px">
                                         <font color='#FF0000'>*</font>帳號：
                                     </td>
-                                    <td class="updateDateContent">
+                                    <td  class="updateDateContent">
                                         <asp:TextBox ID="txtUserId" Width="100px" runat="server"></asp:TextBox>
                                         <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtUserId"
                                             Display="None" ErrorMessage="帳號不可空白" ValidationGroup="Insert"></asp:RequiredFieldValidator>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="style1" align="right" height="30px">
+                                    <td   class="updateDateContent" align="right" height="30px">
                                         <font color='#FF0000'>*</font>姓名：
                                     </td>
                                     <td class="updateDateContent">
@@ -51,7 +45,17 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="style1" align="right" height="30px">
+                                    <td   class="updateDateContent" align="right" height="30px">
+                                        <font color='#FF0000'>*</font>信箱：
+                                    </td>
+                                    <td class="updateDateContent">
+                                        <asp:TextBox ID="txtEmail" Width="200px" runat="server"></asp:TextBox>
+                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ControlToValidate="txtEmail"
+                                            Display="None" ErrorMessage="信箱不可空白" ValidationGroup="Insert"></asp:RequiredFieldValidator>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td   class="updateDateContent" align="right" height="30px">
                                         <font color='#FF0000'>*</font>啟用：
                                     </td>
                                     <td class="updateDateContent">
@@ -63,7 +67,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="style1" align="right" height="30px">
+                                    <td  class="updateDateContent" align="right" height="30px">
                                         權限：
                                     </td>
                                     <td class="updateDateContent">
@@ -72,7 +76,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="style1" align="right" height="30px">
+                                    <td class="updateDateContent" align="right" height="30px">
                                         更新密碼：
                                     </td>
                                     <td class="updateDateContent">
@@ -82,7 +86,7 @@
                                 </tr>
                                 <asp:Panel ID="pnlUpdatePass" runat="server" Visible="false">
                                     <tr>
-                                        <td class="style1" align="right" height="30px">
+                                        <td  class="updateDateContent" align="right" height="30px">
                                             <font color='#FF0000'>*</font>密碼：
                                         </td>
                                         <td class="updateDateContent">
@@ -92,7 +96,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="style1" align="right" height="30px">
+                                        <td  class="updateDateContent" align="right" height="30px">
                                             <font color='#FF0000'>*</font>再次確認密碼：
                                         </td>
                                         <td class="updateDateContent">
@@ -106,12 +110,12 @@
                                 </asp:Panel>
                                 <tr>
                                     <td class="updateDateBtnTR" align="center" colspan="2" height="50px">
-                                        <asp:Button ID="btnAdd" runat="server" Text="新增" OnClick="btnAdd_Click" ValidationGroup="Insert"
-                                            Height="20px" />
-                                        <asp:Button ID="btnUpdate" runat="server" Text="修改" OnClick="btnUpdate_Click" ValidationGroup="Insert"
-                                            Height="20px" />
+                                        <asp:Button ID="btnAdd" runat="server" Text="新增" OnClick="btnAdd_Click" ValidationGroup="Insert" CssClass="btn"
+                                           />
+                                        <asp:Button ID="btnUpdate" runat="server" Text="修改" OnClick="btnUpdate_Click" ValidationGroup="Insert" CssClass="btn"
+                                           />
                                         &nbsp;<asp:Button ID="btnBack" runat="server" CausesValidation="False" OnClick="btnBack_Click"
-                                            Height="20px" Text="回清單" />
+                                           Text="回清單" CssClass="btn" />
                                         <asp:ValidationSummary ID="ValidationSummary1" runat="server" DisplayMode="List"
                                             ShowMessageBox="True" ShowSummary="False" ValidationGroup="Insert" />
                                     </td>
